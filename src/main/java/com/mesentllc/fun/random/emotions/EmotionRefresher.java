@@ -16,14 +16,14 @@ public class EmotionRefresher {
 		emotions = ResourceUtils.readEmotions();
 	}
 
-	public void update(JLabel lblEmotion, JTextArea txtDescription, boolean scheduleNext) {
+	public void update(JLabel lblEmotion, JTextArea txtDescription, int refreshInSeconds) {
 		int emotionNumber = new Random().nextInt(emotions.size());
 		String[] segments = emotions.get(emotionNumber).split(":");
 		lblEmotion.setText(segments[0].trim());
 		txtDescription.setText(segments[1].trim());
-		if (scheduleNext) {
+		if (refreshInSeconds > 0) {
 			Executors.newSingleThreadScheduledExecutor().schedule(() ->
-					invokeLater(() -> update(lblEmotion, txtDescription, scheduleNext)), 30, TimeUnit.SECONDS);
+				invokeLater(() -> update(lblEmotion, txtDescription, refreshInSeconds)), refreshInSeconds, TimeUnit.SECONDS);
 		}
 	}
 }

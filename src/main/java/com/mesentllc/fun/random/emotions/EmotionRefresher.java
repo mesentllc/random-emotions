@@ -1,4 +1,4 @@
-package com.mesent.fun.random.emotions;
+package com.mesentllc.fun.random.emotions;
 
 import javax.swing.JLabel;
 import javax.swing.JTextArea;

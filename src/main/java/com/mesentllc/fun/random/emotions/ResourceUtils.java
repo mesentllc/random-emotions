@@ -1,4 +1,4 @@
-package com.mesent.fun.random.emotions;
+package com.mesentllc.fun.random.emotions;
 
 import com.google.common.io.Resources;
 

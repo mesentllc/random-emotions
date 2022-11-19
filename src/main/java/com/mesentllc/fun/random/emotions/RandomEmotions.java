@@ -1,17 +1,20 @@
 package com.mesentllc.fun.random.emotions;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import java.awt.Font;
+import java.util.List;
 import java.util.Objects;
-
-import static java.awt.EventQueue.invokeLater;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 public class RandomEmotions extends javax.swing.JFrame {
     public RandomEmotions() {
         initComponents();
+        emotions = ResourceUtils.readEmotions();
         // Icon by https://www.flaticon.com/authors/juicy-fish
         setIconImage(new ImageIcon(Objects.requireNonNull(getClass().getResource("/mood-swings.png"))).getImage());
-        emotionRefresher = new EmotionRefresher();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -76,15 +79,34 @@ public class RandomEmotions extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPickActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPickActionPerformed
-        emotionRefresher.update(lblEmotion, txtDescription, 0);
+        pickAndSet(lblEmotion, txtDescription);
     }//GEN-LAST:event_btnPickActionPerformed
+
+    private static void pickAndSet(JLabel lblEmotion, JTextArea txtDescription) {
+        int emotionNumber = new Random().nextInt(emotions.size());
+        String[] segments = emotions.get(emotionNumber).split(":");
+        lblEmotion.setText(segments[0].trim());
+        txtDescription.setText(segments[1].trim());
+    }
 
     public static void main(String[] args) {
         RandomEmotions main = new RandomEmotions();
-        final int refreshInSeconds = (args.length > 0) ? Integer.parseInt(args[0]) : 30;
+        final long refreshInSeconds = (args.length > 0) ? Long.parseLong(args[0]) : 30L;
 
-        invokeLater(() -> main.emotionRefresher.update(main.lblEmotion, main.txtDescription, refreshInSeconds));
-        invokeLater(() -> main.setVisible(true));
+        spinUpEmotions(main.lblEmotion, main.txtDescription, refreshInSeconds);
+        CompletableFuture.runAsync(() -> main.setVisible(true));
+    }
+
+    private static void spinUpEmotions(JLabel lblEmotion, JTextArea txtDescription, long refreshInSeconds) {
+        pickAndSet(lblEmotion, txtDescription);
+        CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(refreshInSeconds * 1000L);
+            }
+            catch (InterruptedException ignored) {
+            }
+            spinUpEmotions(lblEmotion, txtDescription, refreshInSeconds);
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -93,5 +115,6 @@ public class RandomEmotions extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrlDescription;
     private javax.swing.JTextArea txtDescription;
     // End of variables declaration//GEN-END:variables
-    private final EmotionRefresher emotionRefresher;
+
+    private static List<String> emotions;
 }

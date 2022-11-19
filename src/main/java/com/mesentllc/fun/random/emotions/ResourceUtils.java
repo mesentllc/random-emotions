@@ -4,7 +4,7 @@ import com.google.common.io.Resources;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class ResourceUtils {
         List<String> emotions = new ArrayList<>();
         URL url = Resources.getResource("Emotions.txt");
         try {
-            emotions = Resources.readLines(url, Charset.defaultCharset());
+            emotions = Resources.readLines(url, StandardCharsets.UTF_8);
         }
         catch (IOException ignore) {
         }
